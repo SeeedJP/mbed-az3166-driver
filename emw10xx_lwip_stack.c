@@ -33,7 +33,8 @@
 #include "lwip/dns.h"
 #include "lwip/udp.h"
 
-#include "SystemLock.h"
+#include "lwip_lock.h"
+#include "emw10xx_lwip_stack.h"
 //#include "emac_api.h"
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -594,6 +595,7 @@ nsapi_error_t mbed_lwip_bringdown(void)
     return 0;
 }
 #endif
+
 /* LWIP error remapping */
 static nsapi_error_t mbed_lwip_err_remap(err_t err) {
     switch (err) {
@@ -621,13 +623,19 @@ static nsapi_error_t mbed_lwip_err_remap(err_t err) {
     }
 }
 
+nsapi_error_t mbed_lwip_init(void)
+{
+    init_lwip_lock();
+    return NSAPI_ERROR_OK;
+}
+
 nsapi_error_t mbed_lwip_bringup(void)
 {
     // Zero out socket set
     mbed_lwip_arena_init();
 
     lwip_connected = true;
-    return 0;
+    return NSAPI_ERROR_OK;
 }
 
 /* LWIP network stack implementation */
